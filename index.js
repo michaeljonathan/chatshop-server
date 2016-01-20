@@ -6,21 +6,33 @@ var app = express();
 var httpServer = http.Server(app);
 var webSockets = socketIO(httpServer);
 
+var chatshopSocket = webSockets.of('/chatshop');
+
 app.get('/', function(req, res) {
 	return res.send('Chatshop is open!');
 });
 
-webSockets.on('connection', function(socket) {
-	socket.on('CLIENT_ARRIVED', function(data) {
-		var message;
-		if (data && data.name) {
-			message = 'Welcome to the Chatshop, '+data.name+'.';
+chatshopSocket.on('connection', function(socket) {
+	socket.on('coffee', function(data) {
+		var response;
+		if (!data) {
+			response = { action: 'meta', status: 'error', error: 'no-payload' }
+		} else if (!data.action) {
+			response = { action: 'meta', status: 'error', error: 'no-action' }
 		} else {
-			message = 'Welcome to the Chatshop.';
+			switch (data.action) {
+				case 'login-req':
+					if (data.credentials.username && data.credentials.password && data.credentials.username == 'mj' && data.credentials.password == '3005') {
+						response = { action: 'login-res', status: 'ok', user: { id: 1, name: 'MJ' } }
+					} else {
+						response = { action: 'login-res', status: 'error', error: 'invalid-credentials', errorForHumans: 'That username and password combination was incorrect' }
+					}
+					break
+				default:
+					response = { action: 'meta', status: 'error', error: 'unrecognized-action' }
+			}
 		}
-		socket.emit('NOTIFICATION', {
-			text: message
-		});
+		socket.emit('coffee', response);
 	});
 });
 
