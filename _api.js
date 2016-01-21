@@ -40,7 +40,7 @@ socket.on('coffee', function(payload) {
 		id: 'u1',
 		name: 'MJ'
 	},
-	authToken: 'isProbablyNotNecessary'
+	linkToken: 't0ken'
 }
 
 // server says (error)
@@ -53,17 +53,17 @@ socket.on('coffee', function(payload) {
 }
 
 /*
- * Update state
+ * Update initial data
  */
 
 // client says
 {
-	action: 'state-req'
+	action: 'initial-data-req'
 }
 
 // server says (ok)
 {
-	action: 'state-res'
+	action: 'initial-data-res'
 	status: 'ok',
 
 	state: {
