@@ -47,14 +47,12 @@ chatshopSocket.on('connection', function(socket) {
 										title: 'Team Updates',
 										description: 'Late? Sick? Leaving early? Post in here to let the team know.',
 										participantIDs: ['u1'],
-										messageIDs: [],
 										unreadSince: false
 									},
 									{
 										id: 't2',
 										type: 'personal',
 										other: 'u3',
-										messageIDs: [],
 										unreadSince: false
 									}
 								],
@@ -103,6 +101,15 @@ chatshopSocket.on('connection', function(socket) {
 							status: 'error',
 							error: 'no-auth'
 						}
+					}
+					break;
+
+				// Message send
+				case 'message-send-req':
+					if (data.message && data.message.threadID && data.message.message && data.message.key) {
+						response = { action: 'message-send-res', status: 'ok', key: data.message.key }
+					} else {
+						response = { action: 'message-send-res', status: 'error', error: 'incomplete-params', errorForHumans: 'Some required info are missing' }
 					}
 					break;
 
